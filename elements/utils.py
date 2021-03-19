@@ -27,3 +27,4 @@ class PrintUtils(object):
 
     def print(self, matrix, id):
         print(self.getMatrix(matrix, id))
+

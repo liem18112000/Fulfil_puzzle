@@ -68,20 +68,6 @@ class PriorityQueue(Container):
             if i == item and p > priority:
                 self.list[index] = (priority, c, item)
                 heapq.heapify(self.list)
-
-
-def manhattanDistance(xy1, xy2):
-    "Returns the Manhattan distance between points xy1 and xy2"
-    return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
-
-
-def euclidianDistance(point1, point2):
-    return int(
-        math.sqrt(
-            (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
-        )
-    )
-
 class SearchUtils(object):
 
     def executeSearch(self, fn, arg):
@@ -90,10 +76,11 @@ class SearchUtils(object):
         end = time.time()
         return solutions, (end - start) * 1000
 
-    def searchResult(self, fn, arg):
+    def searchResult(self, obj, fn, arg):
 
         solutions, eslapseTime = self.executeSearch(fn, arg)
         utils = PrintUtils()
+        obj.printStats()
         print("Time eslapse : " + str(eslapseTime) + " miliseconds")
 
         if len(solutions) == 0:
@@ -108,3 +95,44 @@ class SearchUtils(object):
             print("Current board : ")
             board.print()
             print("======================================================")
+
+
+class StatisitcUtils():
+
+    def __init__(self):
+        self._node_seen = 0
+        self._node_expanded = 0
+        self._memory_usage = 0
+
+    def increaseNodeSeen(self, increase = 1):
+        self._node_seen += increase
+
+    def increaseNodeExpanded(self, increase = 1):
+        self._node_expanded += increase
+
+    def increaseMemory(self, increase):
+        self._memory_usage += increase
+
+    def statisticResult(self):
+        print("Node expanded : " + str(self._node_expanded))
+        print("Node seen : " + str(self._node_seen))
+        print("Memory usage : " + str(self._memory_usage / 1000) + " Kbytes")
+
+import numpy as np
+
+def rowColHeuristic(state):
+
+    board, shapes = state
+
+    row, col = board.getSize()
+    fullRow = np.ones((row,))
+    fullCol = np.ones((col,))
+    
+    for i in range(row):
+        for j in range(col):
+            if board._board[i][j] == -1:
+                fullRow[i] = 0
+                fullCol[j] = 0
+
+    return (fullRow.sum() + fullCol.sum()) / 2
+                
